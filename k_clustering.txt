@@ -1,0 +1,113 @@
+# import the neccesary library needed for this project
+
+from nltk.corpus import stopwords
+
+from nltk.tokenize import word_tokenize
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import nltk
+
+from sklearn.datasets.samples_generator import make_blobs
+
+import nltk
+
+import wikipedia
+
+from sklearn.cluster import KMeans
+
+###using kmeans clustering to fit some wikipedia data into groups and see how the predict and group for a new data###
+
+class gettext:
+
+    def __init__(self,title):
+
+        #self.title=title
+
+        #page= wikipedia.page(title)     # commented ones should be uncommented if running it for the first 
+
+        #f=open(title+".txt","w")     # time,to save those files in your current working directory 
+
+        #f.write(page.summary)            # then comment the ones that are uncommented now.
+
+        #f.close()
+
+        #self.text=page.summary
+
+    
+
+        f=open(title+".txt",'r',encoding='utf8')
+
+        self.text=f.read()
+
+        f.close()
+
+        
+
+    def get(self):
+
+        return self.text
+
+    
+
+cleaning our data a lil bit
+
+# calling our class instance to get data on 3 different titles
+
+def cleandata(text):
+
+    stop= set(stopwords.words())     
+
+    token = word_tokenize(text)
+
+    return(" ").join([word for word in token if word not in stop])
+
+​
+
+if __name__ == "__main__":
+
+    fetch = gettext('Bill Gate')
+
+    file1=cleandata(fetch.get())
+
+    
+
+    fetch = gettext('Didier Drogba')
+
+    file2= cleandata(fetch.get())
+
+     
+
+    fetch = gettext('Kendrick Lamar')
+
+    file3= cleandata(fetch.get())
+
+    
+
+    file=[file1,file2,file3]
+
+
+# making counts on the words
+
+vec =TfidfVectorizer()
+
+vect =vec.fit_transform(file)
+
+
+# now the fun stuff clasifying this data into kmeans cluster and test to see how well the model perform
+
+model = KMeans(n_clusters=3,random_state=None)
+
+model.fit(vect)
+
+model.labels_
+
+array([1, 2, 0])
+
+pred= model.predict(vec.transform(['striker']))  # you can test by writing a sentence or word to see how the model performs
+
+print(pred)
+
+array([2])
+
+print(vec.get_feature_names())
